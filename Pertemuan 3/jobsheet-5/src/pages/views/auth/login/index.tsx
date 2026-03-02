@@ -12,6 +12,7 @@ const TampilanLogin = () => {
     <div className={styles.login}>
       <h1>Halaman Login</h1>
       <button onClick={handlerLogin}>Login</button>  <br />
+      <h1 style={{color:"red", border:"1px solid red", borderRadius:"5px", padding:"5px"}}> belum punya akun </h1>
       <Link href="/auth/register">Ke Halaman Register</Link>
     </div>
   );
