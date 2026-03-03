@@ -8,7 +8,7 @@ const HalamanProduk = () => {
   return (
     <div>
       <h1>Halaman Produk</h1>
-      <p>Produk : {query.id}</p>
+      <p>Produk : {query.produk}</p>
     </div>
   );
 }
