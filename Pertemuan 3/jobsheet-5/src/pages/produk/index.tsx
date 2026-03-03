@@ -1,9 +1,11 @@
-const produk = () => {
+import TampilanProduk from "../views/produk";
+
+const HalamanProduk = () => {
   return (
-    <div>
-      Produk User Page
-    </div>
+    <>
+      <TampilanProduk />
+    </>
   );
 }
 
-export default produk;
+export default HalamanProduk;
