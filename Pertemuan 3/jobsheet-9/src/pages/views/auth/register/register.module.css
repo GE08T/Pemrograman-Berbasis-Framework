@@ -1,0 +1,15 @@
+.register {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 8px;
+}
+
+.text {
+  color: red;
+  border: 1px solid red;
+  border-radius: 5px;
+  padding: 5px;
+}
