@@ -37,6 +37,9 @@ const Custom404 = () => {
               Maaf, halaman yang Anda cari tidak tersedia atau mungkin sudah
               dipindahkan.
             </p>
+            <Link href="/" className={styles.error__link}>
+              Kembali ke Beranda
+            </Link>
           </div>
         </section>
       </main>
