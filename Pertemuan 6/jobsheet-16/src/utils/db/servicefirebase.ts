@@ -14,7 +14,7 @@ import bcrypt from "bcrypt";
 
 const db = getFirestore(app);
 
-export async function retrieveProducts(collectionName: string) {
+export async function retriveProducts(collectionName: string) {
   const snapshot = await getDocs(collection(db, collectionName));
   const data = snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -23,7 +23,7 @@ export async function retrieveProducts(collectionName: string) {
   return data;
 }
 
-export async function retrieveDataByID(collectionName: string, id: string) {
+export async function retriveDataByID(collectionName: string, id: string) {
   const snapshot = await getDoc(doc(db, collectionName, id));
   const data = snapshot.data();
   return data;

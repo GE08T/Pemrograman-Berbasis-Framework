@@ -11,7 +11,8 @@ const baseMiddleware: NextMiddleware = async (
 const requireAuthPaths: string[] = [
     "/profile",
     "/produk",
-    "/about"
+    "/about",
+    "/admin"
 ];
 
 export default withAuth(baseMiddleware, requireAuthPaths);
