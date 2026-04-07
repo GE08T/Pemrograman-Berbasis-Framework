@@ -1,8 +1,9 @@
-import fetcher from "@/utils/swr/fetcher";
-import { useRouter } from "next/router";
-import useSWR from "swr";
-import DetailProduk from "../../views/DetailProduct";
+import dynamic from "next/dynamic";
 import { ProductType } from "../../types/Product.type";
+
+const DetailProduk = dynamic(() => import("../../views/DetailProduct"), {
+  loading: () => <p>Loading product detail...</p>,
+});
 
 const HalamanProduk = ({ product }: { product: ProductType }) => {
   // {/digunakan client-side rendering/}
@@ -31,20 +32,24 @@ export default HalamanProduk;
 
 // {/digunakan static-site generation/}
 export async function getStaticPaths() {
-  const res = await fetch('http://localhost:3000/api/products')
+  const res = await fetch("http://localhost:3000/api/products");
   const response = await res.json();
 
   const paths = response.data.map((product: ProductType) => ({
-    params: { produk: product.id }
-  }))
+    params: { produk: product.id },
+  }));
   // console.log("Paths yang dihasilkan untuk produk:", paths); // Debugging: Tampilkan paths yang dihasilkan
   return {
     paths,
-    fallback: false
-  }
+    fallback: false,
+  };
 }
 
-export async function getStaticProps({ params }: { params: { produk: string } }) {
+export async function getStaticProps({
+  params,
+}: {
+  params: { produk: string };
+}) {
   const res = await fetch(`http://localhost:3000/api/produk/${params?.produk}`);
   // const response: ProductType[] = await res.json();
   const response: { data: ProductType } = await res.json();
@@ -53,6 +58,6 @@ export async function getStaticProps({ params }: { params: { produk: string } })
   return {
     props: {
       product: response.data,
-    }
-  }
+    },
+  };
 }
