@@ -4,43 +4,50 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 const TampilanRegister = () => {
-  const [isLoading, setIsLoading] = useState(false);
+ const [isLoading, setIsLoading] = useState(false);
   const { push } = useRouter();
   const [error, setError] = useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    setError("");
-    setIsLoading(true);
     event.preventDefault();
+    setError("");
     const form = event.currentTarget;
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     const email = formData.get("email") as string;
     const fullname = formData.get("Fullname") as string;
     const password = formData.get("Password") as string;
 
-    setIsLoading(true); // Menambahkan ini agar loading state berjalan
+    // 2. Implementasi Validasi
+    if (!email) {
+      return setError("Email is required");
+    }
+    if (password.length < 6) {
+      return setError("Password must be at least 6 characters");
+    }
 
-    const response = await fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, fullname, password }),
-    });
+    setIsLoading(true);
 
-    // const result = await response.json();
-    // console.log(result);
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, fullname, password }),
+      });
 
-    if (response.status === 200) {
-      form.reset();
-      // event.currentTarget.reset();
+      const result = await response.json();
+
+      if (response.status === 200) {
+        form.reset();
+        setIsLoading(false);
+        push("/auth/login");
+      } else {
+        setIsLoading(false);
+        // 4. Tampilkan pesan error dari backend (Email already exists)
+        setError(result.message || "An error occurred");
+      }
+    } catch (err) {
       setIsLoading(false);
-      push("/auth/login");
-    } else {
-      setIsLoading(false);
-      setError(
-        response.status === 400 ? "Email already exists" : "An error occurred",
-      );
+      setError("Network error, please try again");
     }
   };
   return (
