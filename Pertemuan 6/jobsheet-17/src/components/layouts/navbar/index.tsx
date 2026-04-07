@@ -17,6 +17,13 @@ const Navbar = () => {
             <div className={styles.navbar__user}>
               Welcome, {data.user?.fullname}
             </div>
+            {data.user.image && (
+              <img
+                src={data.user.image}
+                alt={data.user.fullname}
+                className={styles.navbar__user__image}
+              />
+            )}
             <button 
               className={`${styles.navbar__button} ${styles["navbar__button--danger"]}`}
               onClick={() => signOut()}
