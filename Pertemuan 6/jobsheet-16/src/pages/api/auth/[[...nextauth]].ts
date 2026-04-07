@@ -1,5 +1,7 @@
+import { signIn } from "@/utils/db/servicefirebase";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -15,18 +17,28 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const user: any = {
-          id: "1",
-          email: credentials?.email,
-          password: credentials?.password,
-          fullname: credentials?.fullname,
-        };
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const user: any = await signIn(credentials.email);
 
         if (user) {
-          return user;
-        } else {
-          return null;
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
+          if (isPasswordValid) {
+            // Pastikan mengembalikan object user yang bersih
+            return {
+              id: user.id,
+              email: user.email,
+              fullname: user.fullname,
+              role: user.role,
+            };
+          }
         }
+
+        return null;
       },
     }),
   ],
@@ -35,6 +47,7 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === "credentials" && user) {
         token.email = user.email;
         token.fullname = user.fullname;
+        token.role = user.role;
       }
       return token;
     },
@@ -42,16 +55,17 @@ export const authOptions: NextAuthOptions = {
       if (token.email) {
         session.user.email = token.email;
       }
+      
       if (token.fullname) {
         session.user.fullname = token.fullname;
+      }
+      
+      if (token.role) {
+        session.user.role = token.role;
       }
       return session;
     },
   },
-
-  pages: {
-    signIn: "/auth/login",
-  }
 };
 
 export default NextAuth(authOptions);
