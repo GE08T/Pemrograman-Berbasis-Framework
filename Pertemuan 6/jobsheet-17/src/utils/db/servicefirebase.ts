@@ -2,7 +2,6 @@ import {
   getFirestore,
   collection,
   getDocs,
-  Firestore,
   getDoc,
   doc,
   query,
@@ -14,6 +13,52 @@ import app from "./firebase";
 import bcrypt from "bcrypt";
 
 const db = getFirestore(app);
+
+type OAuthUserData = {
+  email: string;
+  fullname: string;
+  image?: string;
+  type: string;
+  role?: string;
+};
+
+async function signInWithOAuthProvider(
+  userData: OAuthUserData,
+  providerName: string,
+  callback: any,
+) {
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("email", "==", userData.email),
+    );
+
+    const querySnapshot = await getDocs(q);
+    const data: any = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    if (data.length > 0) {
+      userData.role = data[0].role;
+      await updateDoc(doc(db, "users", data[0].id), userData);
+    } else {
+      userData.role = "member";
+      await addDoc(collection(db, "users"), userData);
+    }
+
+    callback({
+      status: true,
+      message: `User registered and logged in with ${providerName}`,
+      data: userData,
+    });
+  } catch (error: any) {
+    callback({
+      status: false,
+      message: `Failed to register user with ${providerName}`,
+    });
+  }
+}
 
 export async function retriveProducts(collectionName: string) {
   const snapshot = await getDocs(collection(db, collectionName));
@@ -37,7 +82,7 @@ export async function signIn(email: string) {
     id: doc.id,
     ...doc.data(),
   }));
-  if (data) {
+  if (data.length > 0) {
     return data[0];
   } else {
     return null;
@@ -93,42 +138,9 @@ export async function signUp(
 }
 
 export async function signInWithGoogle(userData: any, callback: any) {
-  try {
-    const q = query(
-      collection(db, "users"),
-      where("email", "==", userData.email),
-    );
+  await signInWithOAuthProvider(userData, "Google", callback);
+}
 
-    const querySnapshot = await getDocs(q);
-    const data: any = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-
-    if (data.length > 0) {
-      // User sudah ada, update data
-      userData.role = data[0].role;
-      await updateDoc(doc(db, "users", data[0].id), userData);
-      callback({
-        status: true,
-        message: "User registered and logged in with Google",
-        data: userData,
-      });
-    } else {
-      // User baru, tambah data
-      userData.role = "member";
-      await addDoc(collection(db, "users"), userData);
-      callback({
-        status: true,
-        message: "User registered and logged in with Google",
-        data: userData,
-      });
-    }
-  } catch (error: any) {
-    // Tangani error di sini
-    callback({
-      status: false,
-      message: "Failed to register user with Google",
-    });
-  }
+export async function signInWithGithub(userData: any, callback: any) {
+  await signInWithOAuthProvider(userData, "Github", callback);
 }

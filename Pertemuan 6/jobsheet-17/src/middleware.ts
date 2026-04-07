@@ -12,7 +12,8 @@ const requireAuthPaths: string[] = [
     "/profile",
     "/produk",
     "/about",
-    "/admin"
+    "/admin",
+    "/editor"
 ];
 
 export default withAuth(baseMiddleware, requireAuthPaths);
