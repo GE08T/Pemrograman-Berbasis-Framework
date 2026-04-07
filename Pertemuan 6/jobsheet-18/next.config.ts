@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "**.gstatic.com",
+      },
+      {
+        protocol: "https",
+        hostname: "areioutdoorgear.co.id",
+      },
+      {
+        protocol: "https",
         hostname: "avatars.githubusercontent.com",
       },
     ],
