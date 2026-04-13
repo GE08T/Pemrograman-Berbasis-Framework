@@ -85,7 +85,7 @@ const TampilanLogin = () => {
               className={style.login__form__item__button}
               disabled={isLoading}
             >
-              {isLoading ? "Loading..." : "Login"}
+              Login
             </button>
             <br /><br />
             <button
@@ -93,7 +93,7 @@ const TampilanLogin = () => {
               className={style.login__form__item__button}
               disabled={isLoading}
             >
-              {isLoading ? "Loading..." : "sign in with google"}
+              sign in with google
             </button>
             <br /><br />
             <button
@@ -101,7 +101,7 @@ const TampilanLogin = () => {
               className={style.login__form__item__button}
               disabled={isLoading}
             >
-              {isLoading ? "Loading..." : "Sign in with Github"}
+              Sign in with Github
             </button>
           </form>
           <br />
